@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zsian Morales — Developer & Creator</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <link rel="icon" type="image/png" href="images/logo.png">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        accent: {
+                            DEFAULT: '#0ea5e9',
+                            dark: '#38bdf8',
+                            light: '#0284c7',
+                        },
+                        neutral: {
+                            50: '#fafafa',
+                            100: '#f5f5f5',
+                            200: '#e5e5e5',
+                            800: '#262626',
+                            900: '#171717',
+                            950: '#0a0a0a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            @apply antialiased;
+        }
+
+        /* Glassmorphism for Sidebar */
+        .glass-dock {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+        }
+
+        .dark .glass-dock {
+            background: rgba(10, 10, 10, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        /* Fixed Sidebar Positioning - Zoom Resistant */
+        @media (min-width: 1024px) {
+            aside {
+                left: 2rem !important;
+                /* Always left on desktop */
+                right: auto !important;
+                top: 50%;
+                transform: translateY(-50%) !important;
+                width: 5rem;
+                max-width: 5rem;
+                border-radius: 2rem;
+                padding: 2rem 0.75rem;
+            }
+
+            body {
+                padding-left: 7rem;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            aside {
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                bottom: 1.5rem;
+                top: auto !important;
+                width: calc(100% - 2rem);
+                max-width: 28rem;
+                border-radius: 9999px;
+                padding: 0.75rem 1rem;
+            }
+
+            body {
+                padding-left: 0;
+            }
+        }
+
+        /* Navigation Tooltips - Improved */
+        .nav-tooltip {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(10px) translateY(-50%);
+            position: absolute;
+            left: calc(100% + 0.75rem);
+            top: 50%;
+            z-index: 60;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        @media (min-width: 1024px) {
+            .group:hover .nav-tooltip {
+                opacity: 1;
+                visibility: visible;
+                transform: translateX(0) translateY(-50%);
+            }
+        }
+
+        /* Hide scrollbar for sidebar but allow scrolling */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Card Hover Effects */
+        .project-card {
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -10px rgba(91, 138, 240, 0.2);
+        }
+
+        .dark .project-card:hover {
+            box-shadow: 0 20px 40px -10px rgba(91, 138, 240, 0.1);
+        }
+
+        .project-image {
+            transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .project-card:hover .project-image {
+            transform: scale(1.08);
+        }
+
+        /* Typewriter Cursor */
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1em;
+            background: currentColor;
+            margin-left: 4px;
+            vertical-align: middle;
+            animation: blink 1.2s steps(2) infinite;
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Dot particles canvas */
+        #dot-canvas {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Smooth scroll offset for anchor links */
+        section {
+            scroll-margin-top: 2rem;
+        }
+
+        /* Mobile bottom nav improvements */
+        @media (max-width: 1023px) {
+            aside {
+                bottom: 1.5rem;
+                width: calc(100% - 2rem);
+                max-width: 28rem;
+            }
+        }
+
+        /* Hero gradient background - subtle gradient for particles */
+        .hero-gradient-bg {
+            background: radial-gradient(ellipse at 30% 20%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(56, 189, 248, 0.06) 0%, transparent 50%);
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .dark .hero-gradient-bg {
+            background: radial-gradient(ellipse at 30% 20%, rgba(14, 165, 233, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(56, 189, 248, 0.08) 0%, transparent 50%);
+        }
+
+        /* Typewriter animation for Morales - fixed width, no layout shift */
+        .typewriter-box {
+            display: inline-block;
+            width: 8ch;
+            /* 7 letters + caret */
+            min-width: 8ch;
+            max-width: 8ch;
+            vertical-align: middle;
+            position: relative;
+            height: 1em;
+        }
+
+        .typewriter {
+            display: inline-block;
+            width: 7ch;
+            min-width: 7ch;
+            max-width: 7ch;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid #0ea5e9;
+            color: #0ea5e9;
+            font-weight: 600;
+            position: absolute;
+            left: 0;
+            top: 0;
+            animation: typing 2s steps(7, end) infinite alternate, blink-caret 0.7s step-end infinite;
+        }
+
+        @keyframes typing {
+            0% {
+                width: 0;
+            }
+
+            40% {
+                width: 7ch;
+            }
+
+            60% {
+                width: 7ch;
+            }
+
+            100% {
+                width: 0;
+            }
+        }
+
+        @keyframes blink-caret {
+
+            from,
+            to {
+                border-color: transparent;
+            }
+
+            50% {
+                border-color: #0ea5e9;
+            }
+        }
+
+        /* Responsive: keep gradient only in hero */
+        #home {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-gradient-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Enhanced Skills Section */
+        .skill-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dark .skill-card {
+            background: linear-gradient(145deg, rgba(31, 41, 55, 0.8) 0%, rgba(17, 24, 39, 0.9) 100%);
+            border: 1px solid rgba(55, 65, 81, 0.3);
+        }
+
+        .skill-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.25);
+            border-color: rgba(14, 165, 233, 0.3);
+        }
+
+        .dark .skill-card:hover {
+            box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.15);
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.8), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .skill-card:hover::before {
+            left: 100%;
+        }
+
+        .skill-icon-wrapper {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 1rem;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(56, 189, 248, 0.05) 100%);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .skill-card:hover .skill-icon-wrapper {
+            transform: rotate(5deg) scale(1.1);
+            box-shadow: 0 8px 25px -8px rgba(14, 165, 233, 0.4);
+        }
+
+        .skill-item {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-item:hover {
+            background: rgba(14, 165, 233, 0.05);
+            border-color: rgba(14, 165, 233, 0.2);
+            transform: translateX(8px);
+        }
+
+        .dark .skill-item:hover {
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .skill-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #0ea5e9, #38bdf8);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .skill-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .language-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.5rem 1rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(229, 231, 235, 0.5);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dark .language-item {
+            border-color: rgba(55, 65, 81, 0.5);
+        }
+
+        .language-item:hover {
+            transform: translateY(-4px);
+            border-color: rgba(14, 165, 233, 0.3);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .language-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .language-item:hover::after {
+            transform: scaleX(1);
+        }
+
+        .language-icon {
+            font-size: 3rem;
+            transition: all 0.3s ease;
+            filter: grayscale(0.7);
+        }
+
+        .language-item:hover .language-icon {
+            filter: grayscale(0);
+            transform: scale(1.1);
+        }
+
+        .progress-ring {
+            width: 4rem;
+            height: 4rem;
+            position: relative;
+        }
+
+        .progress-ring circle {
+            width: 100%;
+            height: 100%;
+            fill: transparent;
+            stroke-width: 4;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .progress-ring .bg-circle {
+            stroke: rgba(229, 231, 235, 0.3);
+        }
+
+        .dark .progress-ring .bg-circle {
+            stroke: rgba(55, 65, 81, 0.3);
+        }
+
+        .progress-ring .progress-circle {
+            stroke: url(#gradient);
+            stroke-dasharray: 125.6;
+            stroke-dashoffset: 125.6;
+            transition: stroke-dashoffset 1s ease;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-white dark:bg-black text-neutral-900 dark:text-neutral-100 min-h-screen relative overflow-x-hidden pb-28 lg:pb-0 transition-colors duration-300">
+
+    <!-- Optimized Sidebar Navigation -->
+    <aside class="fixed z-50 transition-all duration-500 glass-dock flex shadow-2xl
+               lg:flex-col lg:rounded-[2rem] lg:overflow-y-auto lg:top-1/2 lg:-translate-y-1/2 lg:gap-4 no-scrollbar
+               flex-row rounded-full left-0 lg:left-8 px-4 lg:px-0 py-3 lg:py-6 gap-2 items-center justify-between">
+
+        <!-- Logo (Desktop Only) -->
+        <a href="#home"
+            class="hidden lg:flex shrink-0 items-center justify-center w-12 h-12 bg-accent/10 rounded-2xl text-accent font-bold font-mono text-xl hover:bg-accent hover:text-white transition-all duration-300">
+            Z.
+        </a>
+
+        <!-- Main Navigation -->
+        <nav class="flex lg:flex-col justify-between w-full lg:w-auto lg:gap-2 items-center lg:my-4">
+
+            <a href="#home"
+                class="nav-link group relative p-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 dark:text-neutral-400 hover:text-accent transition-all">
+                <i class="fa-solid fa-house text-lg lg:text-xl"></i>
+                <span
+                    class="nav-tooltip bg-neutral-900 dark:bg-neutral-800 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-xl">Home</span>
+            </a>
+
+            <a href="#about"
+                class="nav-link group relative p-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 dark:text-neutral-400 hover:text-accent transition-all">
+                <i class="fa-solid fa-user text-lg lg:text-xl"></i>
+                <span
+                    class="nav-tooltip bg-neutral-900 dark:bg-neutral-800 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-xl">About</span>
+            </a>
+
+            <a href="#skills"
+                class="nav-link group relative p-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 dark:text-neutral-400 hover:text-accent transition-all">
+                <i class="fa-solid fa-code text-lg lg:text-xl"></i>
+                <span
+                    class="nav-tooltip bg-neutral-900 dark:bg-neutral-800 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-xl">Skills</span>
+            </a>
+
+            <a href="#work"
+                class="nav-link group relative p-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 dark:text-neutral-400 hover:text-accent transition-all">
+                <i class="fa-solid fa-layer-group text-lg lg:text-xl"></i>
+                <span
+                    class="nav-tooltip bg-neutral-900 dark:bg-neutral-800 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-xl">Work</span>
+            </a>
+
+            <a href="#apps"
+                class="nav-link group relative p-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 dark:text-neutral-400 hover:text-accent transition-all">
+                <i class="fa-solid fa-mobile-screen text-lg lg:text-xl"></i>
+                <span
+                    class="nav-tooltip bg-neutral-900 dark:bg-neutral-800 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-xl">Apps</span>
+            </a>
+        </nav>
+
+        <!-- Contact & Theme Toggle (Desktop Only) -->
+        <div class="hidden lg:flex flex-col gap-2 items-center w-full">
+            <div class="h-px w-8 bg-neutral-200 dark:bg-neutral-700 my-2"></div>
+
+            <a href="#contact"
+                class="group relative p-3 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 dark:text-neutral-400 hover:text-accent transition-all">
+                <i class="fa-solid fa-envelope text-xl"></i>
+                <span
+                    class="nav-tooltip bg-neutral-900 dark:bg-neutral-800 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-xl">Contact</span>
+            </a>
+
+            <button id="theme-toggle"
+                class="p-3 rounded-xl bg-neutral-50 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 hover:text-accent transition-all">
+                <i class="fa-solid fa-moon text-xl dark:hidden"></i>
+                <i class="fa-solid fa-sun text-xl hidden dark:block"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Theme Toggle -->
+        <button id="mobile-theme-toggle"
+            class="lg:hidden p-3 text-neutral-500 dark:text-neutral-400 hover:text-accent transition-colors">
+            <i class="fa-solid fa-moon text-lg dark:hidden"></i>
+            <i class="fa-solid fa-sun text-lg hidden dark:block"></i>
+        </button>
+    </aside>
+
+    <!-- Main Content -->
+    <section id="home"
+        class="relative min-h-screen flex items-center pt-16 pb-24 lg:pt-12 lg:pb-20 px-5 sm:px-12 z-10 overflow-hidden">
+        <div class="hero-gradient-bg"></div>
+        <canvas id="dot-canvas" class="absolute inset-0 w-full h-full"></canvas>
+        <div class="hero-content relative z-10 max-w-4xl lg:max-w-5xl w-full mx-auto lg:ml-0">
+            <p class="font-mono text-xs sm:text-sm text-accent/80 mb-6 tracking-wider font-medium" data-aos="fade-down">
+                HELLO, I'M
+            </p>
+
+            <h1 class="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-light leading-none mb-8 tracking-tight text-neutral-900 dark:text-white"
+                data-aos="fade-up" data-aos-delay="100">
+                Zsian<br />
+                <span class="font-semibold" style="color:#0ea5e9;">Shackobe</span>
+                <span class="typewriter-box">
+                    <span class="typewriter">Morales</span>
+                </span>
+                <span class="text-accent">.</span>
+            </h1>
+
+            <p class="max-w-2xl text-lg sm:text-xl text-neutral-600 dark:text-neutral-400 leading-relaxed mb-10 pl-1"
+                data-aos="fade-up" data-aos-delay="200">
+                BSIT student crafting <span class="text-neutral-900 dark:text-neutral-200 font-medium">clean web
+                    experiences</span>, secure systems, and creative digital media.
+            </p>
+
+            <div class="flex flex-wrap gap-4" data-aos="fade-up" data-aos-delay="300">
+                <a href="#work"
+                    class="px-6 py-3 bg-accent text-white rounded-full hover:bg-accent/90 transition-all hover:scale-105 font-medium shadow-lg shadow-accent/25 text-sm">
+                    View featured work
+                </a>
+                <a href="#contact"
+                    class="px-6 py-3 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 rounded-full hover:border-accent hover:text-accent transition-all hover:px-8 font-medium text-sm">
+                    Contact Me
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about"
+        class="py-20 lg:py-28 border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black">
+        <div class="max-w-6xl mx-auto px-5 sm:px-8 lg:flex lg:gap-24 lg:items-center">
+            <div class="lg:w-5/12 mb-16 lg:mb-0 relative group" data-aos="fade-right">
+                <div
+                    class="absolute inset-0 bg-accent rounded-3xl rotate-6 opacity-20 group-hover:rotate-3 transition-transform duration-500">
+                </div>
+                <div class="relative rounded-3xl overflow-hidden aspect-[4/5] shadow-2xl">
+                    <img src="images/zsian.jpg" alt="Zsian Morales"
+                        class="w-full h-full object-cover grayscale-[0.35] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700">
+                </div>
+            </div>
+
+            <div class="lg:w-7/12" data-aos="fade-left">
+                <h2 class="text-4xl lg:text-5xl font-light mb-10">
+                    About <span class="text-accent">me</span>
+                </h2>
+                <div class="space-y-6 text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                    <p>I'm a Third-year BSIT student with a passion for turning complex problems into elegant interface
+                        solutions.</p>
+                    <p>My journey started with a curiosity for how games were built, which evolved into full-stack web
+                        development, a deep interest in cybersecurity, and recently, mobile app development.</p>
+                    <p>I believe in "less is more" — focusing on clarity, solid architecture, and user experience above
+                        all else.</p>
+                </div>
+
+                <div class="mt-12 flex flex-wrap gap-3">
+                    <span
+                        class="px-5 py-2 border border-neutral-200 dark:border-neutral-700 rounded-full text-sm hover:border-accent hover:text-accent transition-colors cursor-default">Full
+                        Stack</span>
+                    <span
+                        class="px-5 py-2 border border-neutral-200 dark:border-neutral-700 rounded-full text-sm hover:border-accent hover:text-accent transition-colors cursor-default">Cybersecurity</span>
+                    <span
+                        class="px-5 py-2 border border-neutral-200 dark:border-neutral-700 rounded-full text-sm hover:border-accent hover:text-accent transition-colors cursor-default">Mobile
+                        Dev</span>
+                    <span
+                        class="px-5 py-2 border border-neutral-200 dark:border-neutral-700 rounded-full text-sm hover:border-accent hover:text-accent transition-colors cursor-default">Video
+                        Editing</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="py-20 lg:py-24 border-t border-neutral-200 dark:border-neutral-800">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8">
+            <div class="text-center mb-14" data-aos="fade-up">
+                <h2 class="text-4xl lg:text-5xl font-light mb-5">
+                    Skills & <span class="text-accent">Expertise</span>
+                </h2>
+                <p class="text-lg text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
+                    A comprehensive toolkit spanning full-stack development, cybersecurity, and creative technologies
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8 mb-16">
+                <!-- Programming Languages -->
+                <div class="skill-card p-8 rounded-3xl" data-aos="fade-up">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="skill-icon-wrapper">
+                            <i class="fa-solid fa-code text-accent text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold">Programming</h3>
+                            <p class="text-sm text-neutral-500 dark:text-neutral-400">Core Languages</p>
+                        </div>
+                    </div>
+
+                    <div class="language-grid">
+                        <div class="language-item group">
+                            <i class="fa-brands fa-html5 language-icon text-orange-500"></i>
+                            <div class="text-center">
+                                <span class="text-sm font-medium">HTML5</span>
+                                <div class="text-xs text-neutral-500 mt-1">Advanced</div>
+                            </div>
+                        </div>
+
+                        <div class="language-item group">
+                            <i class="fa-brands fa-css3-alt language-icon text-blue-500"></i>
+                            <div class="text-center">
+                                <span class="text-sm font-medium">CSS3</span>
+                                <div class="text-xs text-neutral-500 mt-1">Advanced</div>
+                            </div>
+                        </div>
+
+                        <div class="language-item group">
+                            <i class="fa-brands fa-js language-icon text-yellow-500"></i>
+                            <div class="text-center">
+                                <span class="text-sm font-medium">JavaScript</span>
+                                <div class="text-xs text-neutral-500 mt-1">Intermediate</div>
+                            </div>
+                        </div>
+
+                        <div class="language-item group">
+                            <i class="fa-brands fa-php language-icon text-indigo-500"></i>
+                            <div class="text-center">
+                                <span class="text-sm font-medium">PHP</span>
+                                <div class="text-xs text-neutral-500 mt-1">Intermediate</div>
+                            </div>
+                        </div>
+
+                        <div class="language-item group">
+                            <i class="fa-brands fa-python language-icon text-blue-600"></i>
+                            <div class="text-center">
+                                <span class="text-sm font-medium">Python</span>
+                                <div class="text-xs text-neutral-500 mt-1">Intermediate</div>
+                            </div>
+                        </div>
+
+                        <div class="language-item group">
+                            <i class="fa-brands fa-java language-icon text-red-600"></i>
+                            <div class="text-center">
+                                <span class="text-sm font-medium">Java</span>
+                                <div class="text-xs text-neutral-500 mt-1">Beginner</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backend & Tools -->
+                <div class="skill-card p-8 rounded-3xl" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="skill-icon-wrapper">
+                            <i class="fa-solid fa-server text-accent text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold">Backend & DevOps</h3>
+                            <p class="text-sm text-neutral-500 dark:text-neutral-400">Infrastructure</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="skill-item">
+                            <div class="flex items-center gap-4">
+                                <i class="fa-solid fa-database text-2xl text-cyan-500"></i>
+                                <div class="flex-1">
+                                    <span class="font-medium">MySQL & Database Design</span>
+                                    <div class="text-sm text-neutral-500 mt-1">Schema design, optimization</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="flex items-center gap-4">
+                                <i class="fa-brands fa-github text-2xl text-gray-700 dark:text-white"></i>
+                                <div class="flex-1">
+                                    <span class="font-medium">Git & Version Control</span>
+                                    <div class="text-sm text-neutral-500 mt-1">Collaboration, branching</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="flex items-center gap-4">
+                                <i class="fa-brands fa-linux text-2xl text-yellow-600"></i>
+                                <div class="flex-1">
+                                    <span class="font-medium">Linux & Server Admin</span>
+                                    <div class="text-sm text-neutral-500 mt-1">cPanel, command line</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="flex items-center gap-4">
+                                <i class="fa-solid fa-cloud text-2xl text-blue-500"></i>
+                                <div class="flex-1">
+                                    <span class="font-medium">Web Hosting</span>
+                                    <div class="text-sm text-neutral-500 mt-1">Deployment, domains</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="flex items-center gap-4">
+                                <i class="fa-solid fa-plug text-2xl text-emerald-500"></i>
+                                <div class="flex-1">
+                                    <span class="font-medium">REST APIs & Integration</span>
+                                    <div class="text-sm text-neutral-500 mt-1">API design, third-party services</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security & Creative -->
+                <div class="skill-card p-8 rounded-3xl" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="skill-icon-wrapper">
+                            <i class="fa-solid fa-shield-halved text-accent text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold">Security & Creative</h3>
+                            <p class="text-sm text-neutral-500 dark:text-neutral-400">Specialized Skills</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="skill-item">
+                            <div class="flex items-center gap-4">
+                                <i class="fa-brands fa-linux text-2xl text-red-500"></i>
+                                <div class="flex-1">
+                                    <span class="font-medium">Penetration Testing</span>
+                                    <div class="text-sm text-neutral-500 mt-1">Kali Linux, Parrot OS</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="flex items-center gap-4">
+                                <i class="fa-solid fa-network-wired text-2xl text-purple-500"></i>
+                                <div class="flex-1">
+                                    <span class="font-medium">Network Analysis</span>
+                                    <div class="text-sm text-neutral-500 mt-1">Wireshark, packet inspection</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="flex items-center gap-4">
+                                <i class="fa-solid fa-video text-2xl text-pink-500"></i>
+                                <div class="flex-1">
+                                    <span class="font-medium">Video Production</span>
+                                    <div class="text-sm text-neutral-500 mt-1">DaVinci Resolve, editing</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="flex items-center gap-4">
+                                <i class="fa-solid fa-mobile-screen text-2xl text-green-500"></i>
+                                <div class="flex-1">
+                                    <span class="font-medium">Mobile Development</span>
+                                    <div class="text-sm text-neutral-500 mt-1">Capacitor, hybrid apps</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Frameworks & Technologies -->
+            <div class="skill-card p-8 rounded-3xl" data-aos="fade-up" data-aos-delay="300">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-semibold mb-2">Frameworks & Technologies</h3>
+                    <p class="text-neutral-500 dark:text-neutral-400">Tools and frameworks I work with</p>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-4">
+                    <span
+                        class="px-6 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 border border-blue-200 dark:border-blue-800 rounded-full text-sm font-medium text-blue-700 dark:text-blue-300 hover:scale-105 transition-transform cursor-default">
+                        <i class="fa-brands fa-bootstrap mr-2"></i>Bootstrap
+                    </span>
+                    <span
+                        class="px-6 py-3 bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-950/50 dark:to-blue-950/50 border border-cyan-200 dark:border-cyan-800 rounded-full text-sm font-medium text-cyan-700 dark:text-cyan-300 hover:scale-105 transition-transform cursor-default">
+                        <i class="fa-solid fa-wind mr-2"></i>Tailwind CSS
+                    </span>
+                    <span
+                        class="px-6 py-3 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/50 dark:to-emerald-950/50 border border-green-200 dark:border-green-800 rounded-full text-sm font-medium text-green-700 dark:text-green-300 hover:scale-105 transition-transform cursor-default">
+                        <i class="fa-brands fa-node-js mr-2"></i>Node.js
+                    </span>
+                    <span
+                        class="px-6 py-3 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950/50 dark:to-red-950/50 border border-orange-200 dark:border-orange-800 rounded-full text-sm font-medium text-orange-700 dark:text-orange-300 hover:scale-105 transition-transform cursor-default">
+                        <i class="fa-solid fa-fire mr-2"></i>Firebase
+                    </span>
+                    <span
+                        class="px-6 py-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/50 dark:to-pink-950/50 border border-purple-200 dark:border-purple-800 rounded-full text-sm font-medium text-purple-700 dark:text-purple-300 hover:scale-105 transition-transform cursor-default">
+                        <i class="fa-brands fa-figma mr-2"></i>Figma
+                    </span>
+                    <span
+                        class="px-6 py-3 bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-950/50 dark:to-slate-950/50 border border-gray-200 dark:border-gray-800 rounded-full text-sm font-medium text-gray-700 dark:text-gray-300 hover:scale-105 transition-transform cursor-default">
+                        <i class="fa-brands fa-wordpress mr-2"></i>WordPress
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SVG Gradient Definition -->
+        <svg width="0" height="0" class="absolute">
+            <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#38bdf8;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+        </svg>
+    </section>
+
+    <section id="work" class="py-20 lg:py-24 border-t border-neutral-200 dark:border-neutral-800">
+        <div class="max-w-6xl mx-auto px-5 sm:px-8">
+            <div class="flex justify-between items-end mb-14" data-aos="fade-up">
+                <h2 class="text-3xl lg:text-4xl font-light">
+                    Featured <span class="text-accent">work</span>
+                </h2>
+                <span class="hidden md:block h-px flex-grow bg-neutral-200 dark:bg-neutral-800 ml-10"></span>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="project-card group rounded-2xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 overflow-hidden cursor-pointer"
+                    data-aos="fade-up">
+                    <div class="relative h-60 overflow-hidden bg-neutral-100 dark:bg-neutral-900">
+                        <div
+                            class="absolute inset-0 bg-neutral-900/0 group-hover:bg-neutral-900/10 transition-colors z-10">
+                        </div>
+                        <img src="images/ecocharge.png" alt="Eco-Charge"
+                            class="project-image w-full h-full object-cover">
+                        <div
+                            class="absolute top-4 right-4 z-20 bg-white/90 dark:bg-neutral-900/90 backdrop-blur px-3 py-1 rounded-full text-xs font-mono border border-neutral-200 dark:border-neutral-700">
+                            Web App
+                        </div>
+                    </div>
+                    <div class="p-8 flex flex-col h-[calc(100%-15rem)]">
+                        <h3 class="text-2xl font-medium mb-2 group-hover:text-accent transition-colors">Eco-Charge</h3>
+                        <p class="text-neutral-500 dark:text-neutral-400 text-sm mb-6 flex-grow">
+                            Dashboard for monitoring renewable energy usage.
+                        </p>
+                        <a href="https://eco-charge-zsian.netlify.app/" target="_blank"
+                            class="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-neutral-800 dark:text-white group-hover:text-accent transition-colors">
+                            View <i
+                                class="fa-solid fa-arrow-right -rotate-45 group-hover:rotate-0 transition-transform duration-500"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card group rounded-2xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 overflow-hidden cursor-pointer"
+                    data-aos="fade-up" data-aos-delay="100">
+                    <div class="relative h-60 overflow-hidden bg-neutral-100 dark:bg-neutral-900">
+                        <div
+                            class="absolute inset-0 bg-neutral-900/0 group-hover:bg-neutral-900/10 transition-colors z-10">
+                        </div>
+                        <img src="images/tour.png" alt="Campus Virtual Tour"
+                            class="project-image w-full h-full object-cover">
+                        <div
+                            class="absolute top-4 right-4 z-20 bg-white/90 dark:bg-neutral-900/90 backdrop-blur px-3 py-1 rounded-full text-xs font-mono border border-neutral-200 dark:border-neutral-700">
+                            Interactive
+                        </div>
+                    </div>
+                    <div class="p-8 flex flex-col h-[calc(100%-15rem)]">
+                        <h3 class="text-2xl font-medium mb-2 group-hover:text-accent transition-colors">Campus Tour</h3>
+                        <p class="text-neutral-500 dark:text-neutral-400 text-sm mb-6 flex-grow">
+                            360-degree digital walkthrough of the university.
+                        </p>
+                        <a href="https://univ-virtualtour.netlify.app/" target="_blank"
+                            class="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-neutral-800 dark:text-white group-hover:text-accent transition-colors">
+                            View <i
+                                class="fa-solid fa-arrow-right -rotate-45 group-hover:rotate-0 transition-transform duration-500"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card group rounded-2xl bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 overflow-hidden cursor-pointer"
+                    data-aos="fade-up" data-aos-delay="200">
+                    <div class="relative h-60 overflow-hidden bg-neutral-100 dark:bg-neutral-900">
+                        <div
+                            class="absolute inset-0 bg-neutral-900/0 group-hover:bg-neutral-900/10 transition-colors z-10">
+                        </div>
+                        <img src="images/asset.png" alt="Asset Management"
+                            class="project-image w-full h-full object-cover">
+                        <div
+                            class="absolute top-4 right-4 z-20 bg-white/90 dark:bg-neutral-900/90 backdrop-blur px-3 py-1 rounded-full text-xs font-mono border border-neutral-200 dark:border-neutral-700">
+                            System
+                        </div>
+                    </div>
+                    <div class="p-8 flex flex-col h-[calc(100%-15rem)]">
+                        <h3 class="text-2xl font-medium mb-2 group-hover:text-accent transition-colors">Asset Manager
+                        </h3>
+                        <p class="text-neutral-500 dark:text-neutral-400 text-sm mb-6 flex-grow">
+                            Inventory tracking system for university resources.
+                        </p>
+                        <a href="https://asset-managementuni.netlify.app" target="_blank"
+                            class="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-neutral-800 dark:text-white group-hover:text-accent transition-colors">
+                            View <i
+                                class="fa-solid fa-arrow-right -rotate-45 group-hover:rotate-0 transition-transform duration-500"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="apps"
+        class="py-20 lg:py-24 border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black">
+        <div class="max-w-6xl mx-auto px-5 sm:px-8">
+            <h2 class="text-3xl lg:text-4xl font-light text-center mb-14" data-aos="fade-up">
+                Mobile <span class="text-accent">Apps</span>
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-10">
+                <div class="project-card group rounded-3xl overflow-hidden shadow-lg bg-white dark:bg-neutral-800"
+                    data-aos="fade-up">
+                    <div class="relative overflow-hidden bg-neutral-100 dark:bg-neutral-900">
+                        <img src="images/ss1.png" alt="Zsian Calc"
+                            class="project-image w-full aspect-video object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60">
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-2xl font-medium">Zsian Calc</h3>
+                            <i class="fa-brands fa-android text-2xl text-green-500 bg-green-500/10 p-2 rounded-lg"></i>
+                        </div>
+                        <p class="text-neutral-600 dark:text-neutral-400 mb-6">Clean calculator with theme support
+                            built
+                            with web tech and Capacitor.</p>
+                        <a href="calculator.html"
+                            class="inline-flex items-center gap-2 text-accent hover:underline font-medium">
+                            Download APK <i class="fa-solid fa-download text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card group rounded-3xl overflow-hidden shadow-lg bg-white dark:bg-neutral-800"
+                    data-aos="fade-up" data-aos-delay="100">
+                    <div class="relative overflow-hidden bg-neutral-100 dark:bg-neutral-900">
+                        <img src="images/app2.png" alt="ZLEN STUDY"
+                            class="project-image w-full aspect-video object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60">
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-2xl font-medium">ZLEN STUDY</h3>
+                            <i class="fa-brands fa-android text-2xl text-green-500 bg-green-500/10 p-2 rounded-lg"></i>
+                        </div>
+                        <p class="text-neutral-600 dark:text-neutral-400 mb-6">Study companion that turns lecture
+                            notes
+                            into structured guides.</p>
+                        <a href="zsianstudy.html"
+                            class="inline-flex items-center gap-2 text-accent hover:underline font-medium">
+                            Download APK <i class="fa-solid fa-download text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="certs"
+        class="py-20 lg:py-24 border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black">
+        <div class="max-w-6xl mx-auto px-5 sm:px-8">
+            <h2 class="text-3xl lg:text-4xl font-light text-center mb-14" data-aos="fade-up">
+                Certificates
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-10">
+                <div class="project-card rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800"
+                    data-aos="fade-up">
+                    <img src="cert/cip.png" alt="Critical Infrastructure Protection" class="project-image w-full">
+                    <div class="p-6 bg-white dark:bg-neutral-800">
+                        <h3 class="text-lg font-medium">Critical Infrastructure Protection</h3>
+                        <p class="text-sm text-neutral-500">OP SWAT</p>
+                    </div>
+                </div>
+
+                <div class="project-card rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800"
+                    data-aos="fade-up" data-aos-delay="100">
+                    <img src="images/80.png" alt="80 hours immersion" class="project-image w-full">
+                    <div class="p-6 bg-white dark:bg-neutral-800">
+                        <h3 class="text-lg font-medium">80 Hours Work Immersion</h3>
+                        <p class="text-sm text-neutral-500">BAIS CITY ICT</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact"
+        class="py-20 lg:py-24 border-t border-neutral-200 dark:border-neutral-800 text-center bg-white dark:bg-black">
+        <div class="max-w-4xl mx-auto px-5">
+            <p class="font-mono text-accent mb-4 text-sm">WHAT'S NEXT?</p>
+            <h2 class="text-4xl font-light mb-10">Let's work <span class="text-accent">together</span></h2>
+
+            <div class="flex justify-center gap-6 mb-12">
+                <a href="https://github.com/zsian136" target="_blank" rel="noopener noreferrer"
+                    class="w-14 h-14 rounded-full border border-neutral-300 dark:border-neutral-700 flex items-center justify-center text-xl hover:bg-neutral-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all hover:scale-110">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/zsian-morales-336598393/" target="_blank" rel="noopener noreferrer"
+                    class="w-14 h-14 rounded-full border border-neutral-300 dark:border-neutral-700 flex items-center justify-center text-xl hover:bg-[#0077b5] hover:border-[#0077b5] hover:text-white transition-all hover:scale-110">
+                    <i class="fa-brands fa-linkedin"></i>
+                </a>
+                <a href="mailto:zeyaan136@gmail.com"
+                    class="w-14 h-14 rounded-full border border-neutral-300 dark:border-neutral-700 flex items-center justify-center text-xl hover:bg-red-500 hover:border-red-500 hover:text-white transition-all hover:scale-110">
+                    <i class="fa-solid fa-envelope"></i>
+                </a>
+            </div>
+
+            <p class="text-sm text-neutral-500 dark:text-neutral-400 font-mono">
+                &copy; 2025 Zsian Morales. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        AOS.init({
+            duration: 700,
+            once: false,
+            mirror: true,
+            easing: 'ease-out-cubic',
+            offset: 80,
+            anchorPlacement: 'top-bottom'
+        });
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        }
+
+        themeToggle.addEventListener('click', toggleTheme);
+        mobileThemeToggle.addEventListener('click', toggleTheme);
+
+        // ─── Active Link Highlighting - Optimized ────────────────────────────────────
+        const sections = document.querySelectorAll("section, footer");
+        const navLinks = document.querySelectorAll(".nav-link");
+
+        const observerOptions = {
+            root: null,
+            threshold: 0.15,
+            rootMargin: "-15% 0px -50% 0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    navLinks.forEach((link) => {
+                        const icon = link.querySelector('i');
+                        link.classList.remove('text-accent', 'bg-accent/10');
+
+                        if (link.getAttribute("href") === `#${id}`) {
+                            link.classList.add('text-accent', 'bg-accent/10');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach((section) => observer.observe(section));
+
+        // ─── Enhanced Mouse-Reactive Particle System ────────────────────────────────────────
+        const heroSection = document.getElementById('home');
+        const canvas = document.getElementById('dot-canvas');
+        const ctx = canvas.getContext('2d', { alpha: true });
+
+        let particles = [];
+        let mouse = { x: null, y: null, radius: 150 };
+        let particleCount = 0;
+        const connectionDistance = 120;
+        const mouseRepelForce = 8;
+
+        function resizeCanvas() {
+            const rect = heroSection.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            // More particles for better effect
+            particleCount = Math.min(100, Math.max(40, Math.floor((canvas.width * canvas.height) / 10000)));
+            initParticles();
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.size = Math.random() * 2.5 + 1;
+                this.baseSize = this.size;
+                this.speedX = (Math.random() - 0.5) * 0.8;
+                this.speedY = (Math.random() - 0.5) * 0.8;
+                this.density = (Math.random() * 30) + 1;
+                this.nearMouse = false;
+            }
+
+            update() {
+                // Calculate distance from mouse
+                if (mouse.x !== null && mouse.y !== null) {
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < mouse.radius) {
+                        this.nearMouse = true;
+                        // Repulsion force - particles flee from cursor
+                        const forceDirectionX = dx / distance;
+                        const forceDirectionY = dy / distance;
+                        const force = (mouse.radius - distance) / mouse.radius;
+                        const directionX = forceDirectionX * force * this.density * 0.6;
+                        const directionY = forceDirectionY * force * this.density * 0.6;
+
+                        this.x -= directionX;
+                        this.y -= directionY;
+
+                        // Increase size when near mouse
+                        this.size = this.baseSize + (1 - distance / mouse.radius) * 3;
+                    } else {
+                        this.nearMouse = false;
+                        this.size = this.baseSize;
+                    }
+                } else {
+                    this.nearMouse = false;
+                    this.size = this.baseSize;
+                }
+
+                // Natural floating movement
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // Bounce off edges with some randomness
+                if (this.x < 0) {
+                    this.x = 0;
+                    this.speedX = Math.abs(this.speedX);
+                }
+                if (this.x > canvas.width) {
+                    this.x = canvas.width;
+                    this.speedX = -Math.abs(this.speedX);
+                }
+                if (this.y < 0) {
+                    this.y = 0;
+                    this.speedY = Math.abs(this.speedY);
+                }
+                if (this.y > canvas.height) {
+                    this.y = canvas.height;
+                    this.speedY = -Math.abs(this.speedY);
+                }
+            }
+
+            draw() {
+                const isDark = document.documentElement.classList.contains('dark');
+
+                // Glow effect for particles near mouse
+                if (this.nearMouse) {
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = isDark ? 'rgba(56, 189, 248, 0.8)' : 'rgba(14, 165, 233, 0.6)';
+                } else {
+                    ctx.shadowBlur = 0;
+                }
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+
+                if (this.nearMouse) {
+                    ctx.fillStyle = isDark ? 'rgba(56, 189, 248, 0.9)' : 'rgba(14, 165, 233, 0.8)';
+                } else {
+                    ctx.fillStyle = isDark ? 'rgba(56, 189, 248, 0.5)' : 'rgba(14, 165, 233, 0.4)';
+                }
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        function connectParticles() {
+            const isDark = document.documentElement.classList.contains('dark');
+
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a + 1; b < particles.length; b++) {
+                    const dx = particles[a].x - particles[b].x;
+                    const dy = particles[a].y - particles[b].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < connectionDistance) {
+                        const opacity = (1 - distance / connectionDistance) * 0.4;
+
+                        // Brighter connection if either particle is near mouse
+                        if (particles[a].nearMouse || particles[b].nearMouse) {
+                            ctx.strokeStyle = isDark
+                                ? `rgba(56, 189, 248, ${opacity * 2})`
+                                : `rgba(14, 165, 233, ${opacity * 2})`;
+                            ctx.lineWidth = 1.5;
+                        } else {
+                            ctx.strokeStyle = isDark
+                                ? `rgba(56, 189, 248, ${opacity})`
+                                : `rgba(14, 165, 233, ${opacity})`;
+                            ctx.lineWidth = 0.8;
+                        }
+
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Connect particles to mouse cursor
+            if (mouse.x !== null && mouse.y !== null) {
+                for (let i = 0; i < particles.length; i++) {
+                    const dx = mouse.x - particles[i].x;
+                    const dy = mouse.y - particles[i].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < mouse.radius) {
+                        const opacity = (1 - distance / mouse.radius) * 0.5;
+                        ctx.strokeStyle = isDark
+                            ? `rgba(56, 189, 248, ${opacity})`
+                            : `rgba(14, 165, 233, ${opacity})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            connectParticles();
+            requestAnimationFrame(animate);
+        }
+
+        // Mouse tracking - relative to hero section
+        heroSection.addEventListener('mousemove', (e) => {
+            const rect = heroSection.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY - rect.top;
+        });
+
+        heroSection.addEventListener('mouseleave', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        // Touch support
+        heroSection.addEventListener('touchmove', (e) => {
+            const rect = heroSection.getBoundingClientRect();
+            mouse.x = e.touches[0].clientX - rect.left;
+            mouse.y = e.touches[0].clientY - rect.top;
+        });
+
+        heroSection.addEventListener('touchend', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        // Debounced resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                resizeCanvas();
+            }, 200);
+        });
+
+        // Initialize
+        resizeCanvas();
+        animate();
+
+        // Smooth scroll with offset
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offset = 80;
+                    const targetPosition = target.offsetTop - offset;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

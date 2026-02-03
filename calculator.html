@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zsian Calc | Smart & Simple</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neu: {
+                            accent: '#0d9488'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- CSS Variables for Dynamic Theming --- */
+        :root {
+            /* Light Mode Default */
+            --bg-color: #e0e5ec;
+            --text-main: #4a5568;
+            --text-sub: #718096;
+            --shadow-light: #ffffff;
+            --shadow-dark: #a3b1c6;
+            --shadow-inset-light: #ffffff;
+            --shadow-inset-dark: #a3b1c6;
+            --nav-bg: rgba(224, 229, 236, 0.85);
+        }
+
+        /* Dark Mode Overrides */
+        [data-theme="dark"] {
+            --bg-color: #212529;
+            --text-main: #e2e8f0;
+            --text-sub: #9ca3af;
+            --shadow-light: #2c3136;
+            --shadow-dark: #16191c;
+            --shadow-inset-light: #2c3136;
+            --shadow-inset-dark: #16191c;
+            --nav-bg: rgba(33, 37, 41, 0.85);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Neumorphic Button Class */
+        .neu-btn {
+            background: var(--bg-color);
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+            transition: all 0.3s ease;
+            color: var(--text-main);
+        }
+
+        .neu-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
+        }
+
+        .neu-btn:active {
+            box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-inset-light);
+            transform: translateY(0);
+        }
+
+        .neu-flat {
+            background: var(--bg-color);
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+        }
+
+        /* Sticky Nav Style */
+        .glass-nav {
+            background-color: var(--nav-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* UPDATED: Pure Neumorphic Image Frame Style */
+        .neu-image-frame {
+            background-color: var(--bg-color);
+            /* Deep "popped out" shadow */
+            box-shadow: 20px 20px 40px var(--shadow-dark), -20px -20px 40px var(--shadow-light);
+            /* Thick border that matches bg color to create the soft edge look */
+            border: 8px solid var(--bg-color);
+            /* Standard rounded corners, not extreme phone corners */
+            border-radius: 1.5rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Optional: slight lift on hover for the whole frame */
+        .neu-image-frame:hover {
+            box-shadow: 25px 25px 50px var(--shadow-dark), -25px -25px 50px var(--shadow-light);
+            transform: translateY(-3px);
+        }
+
+
+        .text-sub {
+            color: var(--text-sub);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-nav transition-colors duration-300">
+        <div class="p-4 md:p-6 flex justify-between items-center max-w-6xl mx-auto w-full">
+            <a href="index.html"
+                class="neu-btn w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-neu-accent">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+
+            <div class="font-bold tracking-widest text-neu-accent">ZSIAN APPS</div>
+
+            <div class="flex gap-4">
+                <button onclick="toggleTheme()" id="theme-btn"
+                    class="neu-btn w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-sub hover:text-neu-accent">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+                <a href="https://github.com/" target="_blank"
+                    class="neu-btn w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-sub hover:text-neu-accent">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center px-4 py-12 pt-28">
+        <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+            <div class="order-2 lg:order-1 text-center lg:text-left">
+                <div class="inline-block px-4 py-2 rounded-full neu-flat mb-6 text-xs font-mono text-neu-accent">
+                    v1.0.0 RELEASE
+                </div>
+                <h1 class="text-5xl md:text-7xl font-black mb-6">
+                    Solve it <br>
+                    <span class="text-neu-accent">Instantly.</span>
+                </h1>
+                <p class="text-sub text-lg mb-10 leading-relaxed max-w-lg mx-auto lg:mx-0">
+                    A lightweight, privacy-focused calculator built with the power of CapacitorJS. No ads, no tracking,
+                    just pure calculation.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start">
+                    <a href="app-debug.apk" download
+                        class="neu-btn px-8 py-4 rounded-xl flex items-center justify-center gap-4 text-neu-accent font-bold group">
+                        <i class="fa-brands fa-android text-2xl group-hover:scale-110 transition-transform"></i>
+                        <span>Download .APK</span>
+                    </a>
+
+                    <button
+                        class="neu-btn px-8 py-4 rounded-xl flex items-center justify-center gap-3 text-sub hover:text-neu-accent font-medium">
+                        <i class="fa-solid fa-code"></i>
+                        <span>Source Code</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4 mt-12">
+                    <div class="neu-btn p-4 rounded-xl flex flex-col items-center justify-center text-center">
+                        <i class="fa-solid fa-feather text-neu-accent mb-2"></i>
+                        <span class="text-xs text-sub">Lightweight</span>
+                    </div>
+                    <div class="neu-btn p-4 rounded-xl flex flex-col items-center justify-center text-center">
+                        <i class="fa-solid fa-ban text-neu-accent mb-2"></i>
+                        <span class="text-xs text-sub">No Ads</span>
+                    </div>
+                    <div class="neu-btn p-4 rounded-xl flex flex-col items-center justify-center text-center">
+                        <i class="fa-solid fa-bolt text-neu-accent mb-2"></i>
+                        <span class="text-xs text-sub">Fast</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-1 lg:order-2 flex justify-center w-full">
+
+                <div class="neu-image-frame w-full max-w-md relative group">
+                    <img src="images/calc.png  " alt="Zsian"
+                        class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out">
+
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center py-8 text-sub text-sm font-mono">
+        &copy; 2025 Zsian Morales.
+    </footer>
+
+    <script>
+        const html = document.documentElement;
+        const themeBtn = document.getElementById('theme-btn');
+        const icon = themeBtn.querySelector('i');
+
+        function toggleTheme() {
+            if (html.getAttribute('data-theme') === 'dark') {
+                html.setAttribute('data-theme', 'light');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        }
+    </script>
+</body>
+
+</html>
